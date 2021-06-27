@@ -29,10 +29,8 @@ class FileStorage:
     def save(self):
         """serializes __objects to the JSON file (path: __file_path)"""
         dictionaries = {}
-
         for key, obj in self.all().items():
             dictionaries[key] = obj.to_dict()
-
         with open(FileStorage.__file_path, 'w', encoding='utf8') as file:
             json.dump(dictionaries, file)
 
@@ -48,7 +46,7 @@ class FileStorage:
                 dictionaries = json.load(file)
         except FileNotFoundError:
             return
-
-        for key, each_dict in dictionaries.items():
-            new_object = BaseModel(**each_dict)
-            self.new(new_object)
+        if type(dictionaries) is dict:
+            for key, each_dict in dictionaries.items():
+                new_object = BaseModel(**each_dict)
+                self.new(new_object)
