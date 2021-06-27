@@ -33,7 +33,10 @@ class BaseModel:
         Returns:
             string: should print [<class name>] (<self.id>) <self.__dict__>
         """
-        return ("[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__))
+        class_name = self.__class__.__name__
+        self_id = self.id
+        self_dict = self.__dict__
+        return "[{}] ({}) {}".format(class_name, self_id, self_dict)
 
     def save(self):
         """ Update the update_at """
