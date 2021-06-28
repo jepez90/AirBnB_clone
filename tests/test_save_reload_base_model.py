@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+import sys
+import os
+sys.path.append(os.path.abspath('..'))
+
 from models import storage
 from models.base_model import BaseModel
 
