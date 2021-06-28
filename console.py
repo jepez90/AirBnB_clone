@@ -6,9 +6,6 @@ from models import storage
 
 class HBNBCommand(cmd.Cmd):
     """ class HBNBCommand is a console
-
-    Attributes:
-        prompt: custom prompt
     """
 
     prompt = "(hbnb)"
@@ -30,9 +27,9 @@ class HBNBCommand(cmd.Cmd):
         """
         args = line.split()
         if is_correct_class_name(args):
-            id = get_id(args)
-            if id:
-                print(storage.all().get(id))
+            instance_id = get_id(args)
+            if instance_id:
+                print(storage.all().get(instance_id))
 
     def do_destroy(self, line):
         """($ destroy <classname> <id>): Deletes an instance based on the class
@@ -40,9 +37,9 @@ class HBNBCommand(cmd.Cmd):
         """
         args = line.split()
         if is_correct_class_name(args):
-            id = get_id(args)
-            if id:
-                del(storage.all()[id])
+            instance_id = get_id(args)
+            if instance_id:
+                del(storage.all()[instance_id])
                 storage.save()
 
     def do_all(self, line):
@@ -52,9 +49,27 @@ class HBNBCommand(cmd.Cmd):
         args = line.split()
         if len(args) == 0 or is_correct_class_name(args):
             dictionaries = []
-            for key, obj in storage.all().items():
-                dictionaries.append(obj.to_dict())
+            for key, instance in storage.all().items():
+                dictionaries.append(instance.to_dict())
             print(dictionaries)
+
+    def do_update(self, line):
+        """($ update <class name> <id> <attribute name> "<attribute value>"):
+        Updates an instance based on the class name and id by adding or
+        updating attribute
+        """
+        args = line.split()
+        if is_correct_class_name(args):
+            instance_id = get_id(args)
+            if instance_id and is_valid_attribute(args):
+                attribute_name = args[2]
+                instance = storage.all().get(instance_id)
+
+                prev_attr = getattr(instance, attribute_name)
+                type_attr = type(prev_attr)
+
+                setattr(instance, attribute_name, type_attr(args[3]))
+                instance.save()
 
     def do_EOF(self, line):
         """(ctrl+d) or ($ EOF): Exits the console """
@@ -97,11 +112,30 @@ def get_id(args):
         print("** instance id missing **")
         return None
 
-    id = "BaseModel." + args[1]
-    if id in storage.all().keys():
-        return id
+    instance_id = "BaseModel." + args[1]
+    if instance_id in storage.all().keys():
+        return instance_id
     else:
         print("** no instance found **")
+
+
+def is_valid_attribute(args):
+    """ check if exist and the correct format for the attributes
+    """
+    if len(args) == 2:
+        """If the attribute name is missing, print ** attribute name missing **
+        (ex: $ update BaseModel existing-id)"""
+        print("** attribute name missing **")
+        return False
+    elif len(args) == 3:
+        """If the value for the attribute name doesn’t exist, print
+        ** value missing ** (ex: $ update BaseModel existing-id first_name)"""
+        print("** value missing **")
+        return False
+    elif args[3] in ['id', 'created_at', 'created_at']:
+        return False
+    else:
+        return True
 
 
 if __name__ == '__main__':
