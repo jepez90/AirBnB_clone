@@ -57,7 +57,7 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             """if doesn't given class name, show all instances"""
             for key, instance in storage.all().items():
-                dictionaries.append(instance.to_dict())
+                dictionaries.append(instance.__str__())
 
         elif self.is_correct_class_name(args):
             """if was given a class name, show only instances of this class"""
@@ -65,7 +65,7 @@ class HBNBCommand(cmd.Cmd):
             for key, instance in storage.all().items():
                 class_of_instance = instance.__class__.__name__
                 if class_of_instance == args[0]:
-                    dictionaries.append(instance.to_dict())
+                    dictionaries.append(instance.__str__())
         else:
             """if class name was given but it doen't exist"""
             return
