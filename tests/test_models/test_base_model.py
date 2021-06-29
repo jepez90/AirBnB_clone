@@ -25,23 +25,6 @@ class TestBaseModel(unittest.TestCase):
         except Exception:
             pass
 
-    def test_pep8_User(self):
-        """ Check pep8 """
-        psg = pep8.StyleGuide(quiet=True)
-        model = "models/base_model.py"
-        tests = "tests/test_models/test_base_model.py"
-        results = psg.check_files([model, tests])
-        self.assertEqual(results.total_errors, 0,
-                         "Found code style errors (and warnings).")
-
-    def test_documentation(self):
-        """ Check documentation """
-        self.assertIsNotNone(BaseModel.__doc__)
-        self.assertIsNotNone(BaseModel.__init__.__doc__)
-        self.assertIsNotNone(BaseModel.__str__.__doc__)
-        self.assertIsNotNone(BaseModel.save.__doc__)
-        self.assertIsNotNone(BaseModel.to_dict.__doc__)
-
     def test_methods(self):
         """ Validates class methods """
         self.assertTrue(hasattr(BaseModel, "__init__"))
