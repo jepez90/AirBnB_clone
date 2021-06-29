@@ -10,7 +10,6 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = "(hbnb)"
-    doc_header = "These commands can be used (type help <command>):"
 
     def do_create(self, line):
         """($ create <classname>): Creates a new instance of BaseModel,
