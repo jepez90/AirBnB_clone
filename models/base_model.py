@@ -1,4 +1,4 @@
-#!/user/bin/python3
+#!/usr/bin/python3
 """This module defines the BaseModel class"""
 from datetime import datetime
 from uuid import uuid4
