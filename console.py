@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """ This module defines the class HBNBCommand as a console """
 import cmd
-import json
 from models import storage
 
 
@@ -137,10 +136,6 @@ class HBNBCommand(cmd.Cmd):
         """($ quit): Exits the console """
         return True
 
-    def do_q(self, line):
-        """($ q): Exits the console """
-        return True
-
     def help_classname(self):
         """ Show help string for <class name>.<command> options"""
         print("<ClassName>.<function>: can invoke the nexts classnames\n\
@@ -173,7 +168,17 @@ class HBNBCommand(cmd.Cmd):
 
     def preloop(self):
         """before to start the loop, load the classnames and rreferences"""
-        self.classes = storage.classes
+        from models.base_model import BaseModel
+        from models.user import User
+        self.classes = {
+            "BaseModel": BaseModel,
+            "User": User,
+            "Place": BaseModel,
+            "State": BaseModel,
+            "City": BaseModel,
+            "Amenity": BaseModel,
+            "Review": BaseModel
+        }
 
     def is_correct_class_name(self, args):
         """ check if the classname was given as argument and exists
