@@ -39,6 +39,17 @@ class FileStorage:
         (__file_path) exists ; otherwise, do nothing.
         """
         from models.base_model import BaseModel
+        from models.user import User
+        self.classes = {
+            "BaseModel": BaseModel,
+            "User" : User,
+            "Place": BaseModel,
+            "State": BaseModel,
+            "City": BaseModel,
+            "Amenity": BaseModel,
+            "Review": BaseModel
+        }
+
         dictionaries = {}
 
         try:
@@ -48,5 +59,7 @@ class FileStorage:
             return
         if type(dictionaries) is dict:
             for key, each_dict in dictionaries.items():
-                new_object = BaseModel(**each_dict)
+                class_name, instance_id = key.split('.')
+                new_type = self.classes[class_name]
+                new_object = new_type(**each_dict)
                 self.new(new_object)
