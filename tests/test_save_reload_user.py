@@ -1,9 +1,12 @@
 #!/usr/bin/python3
 """basic tests for User class"""
 
-from models import storage
-from models.base_model import BaseModel
-from models.user import User
+import sys
+import os
+sys.path.append(os.path.abspath('..'))
+from models import storage  # nopep8
+from models.base_model import BaseModel  # nopep8
+from models.user import User  # nopep8
 
 print("-- Create a new User --")
 my_user = User()

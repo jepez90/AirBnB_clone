@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 """basic tests for base model at load from dict"""
-
-from models.base_model import BaseModel
+import sys
+import os
+sys.path.append(os.path.abspath('..'))
+from models.base_model import BaseModel  # nopep8
 
 my_model = BaseModel()
 my_model.name = "Holberton"
