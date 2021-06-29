@@ -139,6 +139,32 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("unhandle command")
 
+    def help_classname(self):
+        """ Show help string for <class name>.<command> options"""
+        print("<ClassName>.<function>: can invoke the nexts classnames\n\
+        [BaseModel, User]\n\
+        with the follows actions\n\
+        .show(): shows all instances of ClassName class\n")
+
+    def completenames(self, text, *ignored):
+        """ get the list of words to autocomplete """
+        # call the parent method to the default list
+        names = super().completenames(text, *ignored)
+
+        if text.find('.') != -1:
+            # ads the command after the class name e: User.a->User.all
+            text_copy = text.split('.')
+            if text_copy[0] in self.classes.keys():
+                for word in ['all', 'count', 'show', 'destroy', 'update']:
+                    if word.lower().startswith(text_copy[1].lower()):
+                        names.append('{}.{}'.format(text_copy[0], word))
+        else:
+            # add the classes as commands to autocomplete
+            for word in self.classes.keys():
+                if word.lower().startswith(text.lower()):
+                    names.append(word)
+        return names
+
     def do_EOF(self, line):
         """(ctrl+d) or ($ EOF): Exits the console """
         return True
@@ -150,6 +176,7 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """does nothing"""
         pass
+
 
 def is_correct_class_name(self, args):
         """ check if the classname was given as argument and exists
