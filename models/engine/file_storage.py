@@ -42,7 +42,7 @@ class FileStorage:
         from models.user import User
         self.classes = {
             "BaseModel": BaseModel,
-            "User" : User,
+            "User": User,
             "Place": BaseModel,
             "State": BaseModel,
             "City": BaseModel,

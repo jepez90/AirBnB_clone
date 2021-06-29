@@ -1,4 +1,5 @@
 #!/user/bin/python3
+"""This module defines the BaseModel class"""
 from datetime import datetime
 from uuid import uuid4
 from models import storage

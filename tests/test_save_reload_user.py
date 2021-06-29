@@ -1,4 +1,10 @@
 #!/usr/bin/python3
+"""basic tests for User class"""
+
+import sys
+import os
+sys.path.append(os.path.abspath('..'))  # nopep8
+
 from models import storage
 from models.base_model import BaseModel
 from models.user import User
