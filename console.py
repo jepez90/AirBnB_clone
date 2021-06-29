@@ -2,6 +2,8 @@
 """ This module defines the class HBNBCommand as a console """
 import cmd
 from models import storage
+from models.base_model import BaseModel
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -9,13 +11,22 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = "(hbnb)"
+    classes = {
+            "BaseModel": BaseModel,
+            "User": User,
+            "Place": BaseModel,
+            "State": BaseModel,
+            "City": BaseModel,
+            "Amenity": BaseModel,
+            "Review": BaseModel
+        }
 
     def do_create(self, line):
         """($ create <classname>): Creates a new instance of BaseModel,
         saves it (to the JSON file) and prints the id
         """
         args = line.split()
-        if self.is_correct_class_name(args):
+        if is_correct_class_name(self, args):
             class_name = args[0]
 
             """get a reference to the class class_name"""
@@ -31,7 +42,7 @@ class HBNBCommand(cmd.Cmd):
         an instance based on the class name and id
         """
         args = line.split()
-        if self.is_correct_class_name(args):
+        if is_correct_class_name(self, args):
             instance_id = get_id(args)
             if instance_id:
                 print(storage.all().get(instance_id))
@@ -41,7 +52,7 @@ class HBNBCommand(cmd.Cmd):
         name and id
         """
         args = line.split()
-        if self.is_correct_class_name(args):
+        if is_correct_class_name(self, args):
             instance_id = get_id(args)
             if instance_id:
                 del(storage.all()[instance_id])
@@ -58,7 +69,7 @@ class HBNBCommand(cmd.Cmd):
             for key, instance in storage.all().items():
                 dictionaries.append(instance.__str__())
 
-        elif self.is_correct_class_name(args):
+        elif is_correct_class_name(self, args):
             """if was given a class name, show only instances of this class"""
 
             for key, instance in storage.all().items():
@@ -77,7 +88,7 @@ class HBNBCommand(cmd.Cmd):
         updating attribute
         """
         args = line.split()
-        if self.is_correct_class_name(args):
+        if is_correct_class_name(self, args):
             instance_id = get_id(args)
             if instance_id and is_valid_attribute(args):
                 attribute_name = args[2]
@@ -94,7 +105,7 @@ class HBNBCommand(cmd.Cmd):
         recognized
         """
         # checs for the correct format of the line
-        class_name, command, args = self.split_by_class_name(line)
+        class_name, command, args = split_by_class_name(self, line)
         if class_name is None:
             super().default(line)
             return
@@ -136,51 +147,11 @@ class HBNBCommand(cmd.Cmd):
         """($ quit): Exits the console """
         return True
 
-    def help_classname(self):
-        """ Show help string for <class name>.<command> options"""
-        print("<ClassName>.<function>: can invoke the nexts classnames\n\
-        [BaseModel, User]\n\
-        with the follows actions\n\
-        .show(): shows all instances of ClassName class\n")
-
-    def completenames(self, text, *ignored):
-        """ get the list of words to autocomplete """
-        # call the parent method to the default list
-        names = super().completenames(text, *ignored)
-
-        if text.find('.') != -1:
-            # ads the command after the class name e: User.a->User.all
-            text_copy = text.split('.')
-            if text_copy[0] in self.classes.keys():
-                for word in ['all', 'count', 'show', 'destroy', 'update']:
-                    if word.lower().startswith(text_copy[1].lower()):
-                        names.append('{}.{}'.format(text_copy[0], word))
-        else:
-            # add the classes as commands to autocomplete
-            for word in self.classes.keys():
-                if word.lower().startswith(text.lower()):
-                    names.append(word)
-        return names
-
     def emptyline(self):
         """does nothing"""
         pass
 
-    def preloop(self):
-        """before to start the loop, load the classnames and rreferences"""
-        from models.base_model import BaseModel
-        from models.user import User
-        self.classes = {
-            "BaseModel": BaseModel,
-            "User": User,
-            "Place": BaseModel,
-            "State": BaseModel,
-            "City": BaseModel,
-            "Amenity": BaseModel,
-            "Review": BaseModel
-        }
-
-    def is_correct_class_name(self, args):
+def is_correct_class_name(self, args):
         """ check if the classname was given as argument and exists
         return False on error or True
         """
@@ -194,7 +165,8 @@ class HBNBCommand(cmd.Cmd):
         else:
             return True
 
-    def split_by_class_name(self, line):
+
+def split_by_class_name(self, line):
         """splits the line when style Classname.command is used"""
         # gets the class name
         line = line.strip()
