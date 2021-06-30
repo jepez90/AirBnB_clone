@@ -2,8 +2,6 @@
 """ This module defines the class HBNBCommand as a console """
 import cmd
 from models import storage
-from models.base_model import BaseModel
-from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -11,15 +9,7 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = "(hbnb)"
-    classes = {
-            "BaseModel": BaseModel,
-            "User": User,
-            "Place": BaseModel,
-            "State": BaseModel,
-            "City": BaseModel,
-            "Amenity": BaseModel,
-            "Review": BaseModel
-        }
+    classes = storage.classes
 
     def do_create(self, line):
         """($ create <classname>): Creates a new instance of BaseModel,
@@ -94,7 +84,10 @@ class HBNBCommand(cmd.Cmd):
                 attribute_name = args[2]
                 instance = storage.all().get(instance_id)
 
-                prev_attr = getattr(instance, attribute_name)
+                try:
+                    prev_attr = getattr(instance, attribute_name)
+                except(AttributeError):
+                    prev_attr = ""
                 type_attr = type(prev_attr)
 
                 setattr(instance, attribute_name, type_attr(args[3]))

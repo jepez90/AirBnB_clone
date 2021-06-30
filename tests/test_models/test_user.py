@@ -27,7 +27,6 @@ class TestUser(unittest.TestCase):
         except:
             pass
 
-
     def test_attributes(self):
         """ validates the existence of the object's attributes """
         self.assertTrue('id' in self.user.__dict__)

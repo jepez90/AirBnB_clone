@@ -5,7 +5,7 @@ from models.base_model import BaseModel
 
 class State(BaseModel):
     """State class which inherits from BaseModel
-    
+
      Args:
         BaseModel (class): SuperClass
     """
