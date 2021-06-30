@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """ test_base_model.py """
 import os
-import pep8
 import unittest
 from models.base_model import BaseModel
 
@@ -24,23 +23,6 @@ class TestBaseModel(unittest.TestCase):
             os.remove("file.json")
         except Exception:
             pass
-
-    def test_pep8_User(self):
-        """ Check pep8 """
-        psg = pep8.StyleGuide(quiet=True)
-        model = "models/base_model.py"
-        tests = "tests/test_models/test_base_model.py"
-        results = psg.check_files([model, tests])
-        self.assertEqual(results.total_errors, 0,
-                         "Found code style errors (and warnings).")
-
-    def test_documentation(self):
-        """ Check documentation """
-        self.assertIsNotNone(BaseModel.__doc__)
-        self.assertIsNotNone(BaseModel.__init__.__doc__)
-        self.assertIsNotNone(BaseModel.__str__.__doc__)
-        self.assertIsNotNone(BaseModel.save.__doc__)
-        self.assertIsNotNone(BaseModel.to_dict.__doc__)
 
     def test_methods(self):
         """ Validates class methods """
