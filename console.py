@@ -141,10 +141,12 @@ class HBNBCommand(cmd.Cmd):
 
     def help_classname(self):
         """ Show help string for <class name>.<command> options"""
-        print("<ClassName>.<function>: can invoke the nexts classnames\n\
-        [BaseModel, User]\n\
-        with the follows actions\n\
-        .show(): shows all instances of ClassName class\n")
+        print("<ClassName>.<action>(args):\n\
+        can invoke the nexts classnames:\n\
+        \t'BaseModel', 'User', 'Place', 'State', 'City', 'Amenity', 'Review'\n\
+        with the follows actions:\n\
+        \t'all', 'count', 'show', 'destroy', 'update':\n\
+        ex: User.update(38f22813-2753-4d42, first_name, John)\n")
 
     def completenames(self, text, *ignored):
         """ get the list of words to autocomplete """
