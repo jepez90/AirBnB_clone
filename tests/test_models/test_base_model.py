@@ -47,9 +47,12 @@ class TestBaseModel(unittest.TestCase):
     def test_save(self):
         """ Check save method """
         update = self.base_model.updated_at
+        time_updated = os.path.getmtime('file.json')
         self.base_model.save()
         self.assertNotEqual(update, self.base_model.updated_at)
         self.assertTrue(os.path.exists('file.json'))
+        # print("last modified: %s" % time.ctime(os.path.getmtime(file)))
+        self.assertNotEqual(os.path.getmtime('file.json'), time_updated)
 
     def test_to_dict(self):
         """ Check dictionary method """
