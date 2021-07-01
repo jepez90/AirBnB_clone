@@ -15,7 +15,7 @@ class HBNBCommand(cmd.Cmd):
     """ class HBNBCommand is a console
     """
 
-    prompt = "(hbnb)"
+    prompt = "(hbnb) "
     classes = {
         "BaseModel": BaseModel,
         "User": User,
@@ -181,7 +181,16 @@ class HBNBCommand(cmd.Cmd):
                 names.append(word)
         return names
 
-    def do_EOFhelp(self, line):
+    def help_class_name(self):
+        """ Show help string for <class name>.<command> options"""
+        print("<Class Name>.<action>(args):\n\
+        can invoke the nexts classnames:\n\
+        \t'BaseModel', 'User', 'Place', 'State', 'City', 'Amenity', 'Review'\n\
+        with the follows commands:\n\
+        \t'all', 'count', 'show', 'destroy', 'update':\n\
+        ex: User.update('38f22813-2753-4d42', 'first_name', 'John')\n")
+
+    def do_EOF(self, line):
         """(ctrl+d) or ($ EOF): Exits the console """
         return True
 
