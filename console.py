@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 """ This module defines the class HBNBCommand as a console """
 import cmd
+import json
+from json.decoder import JSONDecodeError
 from models import storage
 
 
@@ -124,10 +126,17 @@ class HBNBCommand(cmd.Cmd):
             self.do_destroy(class_name + ' ' + args[0])
 
         elif command == 'update':
-            if len(args) == 1:
-                self.do_update(class_name + ' ' + args[0])
+            if len(args) == 2 and type(args[1]) == dict:
+                # update from dictionary
+                update_from_dict(self, class_name, args)
+            elif len(args) == 3:
+                # update only one attribute
+                args = [args[0], {args[1]: args[2]}]
+                update_from_dict(self, class_name, args)
             else:
-                print("aun no actualizo con diccionarios")
+                # incorrect attribute number
+                args = ' '.join(args)
+                self.do_update(class_name + ' ' + args)
 
         else:
             print("unhandle command")
@@ -173,51 +182,88 @@ class HBNBCommand(cmd.Cmd):
         pass
 
 
-def is_correct_class_name(self, args):
-        """ check if the classname was given as argument and exists
-        return False on error or True
-        """
+def update_from_dict(self, class_name, args):
+    """ update from dictionary in the format [id, {attr: value}]
 
-        if len(args) == 0:
-            print("** class name missing **")
-            return False
-        elif args[0] not in self.classes.keys():
-            print("** class doesn't exist **")
-            return False
-        else:
-            return True
+    args:
+        self (HBNBCommand): instance of the console
+        class_name (str): valid class to be updated
+        args (list): list in the format [id (str), {attr (str): value (str)}]
+    """
+
+    for attr_name, attr_value in args[1].items():
+        instance_id = get_id([class_name, args[0]])
+        if instance_id and is_valid_attribute(
+            [class_name, args[0], attr_name, attr_value]
+        ):
+            instance = storage.all().get(instance_id)
+
+            try:
+                prev_attr = getattr(instance, attr_name)
+                type_attr = type(prev_attr)
+            except(AttributeError):
+                type_attr = str
+
+            setattr(instance, attr_name, type_attr(attr_value))
+            instance.save()
+
+
+def is_correct_class_name(self, args):
+    """ check if the classname was given as argument and exists
+    return False on error or True
+
+    args:
+        self (HBNBCommand): instance of the console
+        args (list): list in the format
+    """
+
+    if len(args) == 0:
+        print("** class name missing **")
+        return False
+    elif args[0] not in self.classes.keys():
+        print("** class doesn't exist **")
+        return False
+    else:
+        return True
 
 
 def split_by_class_name(self, line):
-        """splits the line when style Classname.command is used"""
-        # gets the class name
-        line = line.strip()
-        line_split = line.split('.')
-        class_name = line_split[0]
-        if class_name not in self.classes.keys() or len(line_split) != 2:
-            return None, None, None
+    """splits the line when style Classname.command is used"""
+    # gets the class name
+    line_split = line.split('.')
+    class_name = line_split[0]
+    if class_name not in self.classes.keys() or len(line_split) != 2:
+        return None, None, None
 
-        # gets the command_name
-        line_split = line_split[1]
-        index_to_split = line_split.find('(')
+    # gets the command_name
+    line_split = line_split[1]
+    index_to_split = line_split.find('(')
 
-        if (index_to_split == -1):
-            return None, None, None
+    if (index_to_split == -1):
+        return None, None, None
 
-        command = line_split[:index_to_split]
-        if command not in ['all', 'count', 'show', 'destroy', 'update']:
-            return class_name, None, None
+    command = line_split[:index_to_split]
+    if command not in ['all', 'count', 'show', 'destroy', 'update']:
+        return class_name, None, None
 
-        # gets the args of teh function
-        args = []
-        args.append(line_split[index_to_split + 1: -1])
-        """line_split = line_split.split(',')
+    # gets the args of teh function
+
+    line_split = '[' + line_split[index_to_split + 1: -1] + ']'
+    args = []
+    try:
+        args = json.loads(line_split)
+    except(JSONDecodeError):
+        args.append(line_split[1: -1])
+    if len(args) == 0:
+        args.append("")
+
+    """line_split = line_split.split(',')
         args = []
         for arg in line_split:
             arg = arg.strip()
             args.append(arg)"""
 
-        return class_name, command, args
+    return class_name, command, args
 
 
 def get_id(args):
@@ -252,6 +298,7 @@ def is_valid_attribute(args):
         return False
     else:
         return True
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
