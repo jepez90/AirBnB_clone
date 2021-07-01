@@ -4,6 +4,13 @@ import cmd
 import json
 from json.decoder import JSONDecodeError
 from models import storage
+from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
@@ -11,7 +18,15 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = "(hbnb)"
-    classes = storage.classes
+    classes = {
+        "BaseModel": BaseModel,
+        "User": User,
+        "Place": Place,
+        "State": State,
+        "City": City,
+        "Amenity": Amenity,
+        "Review": Review
+    }
 
     def do_create(self, line):
         """($ create <classname>): Creates a new instance of BaseModel,
@@ -149,6 +164,25 @@ class HBNBCommand(cmd.Cmd):
         with the follows actions:\n\
         \t'all', 'count', 'show', 'destroy', 'update':\n\
         ex: User.update(38f22813-2753-4d42, first_name, John)\n")
+
+    def completenames(self, text, *ignored):
+        """ get the list of words to autocomplete """
+        # call the parent method to the default list
+        names = super().completenames(text, *ignored)
+
+        if text.find('.') != -1:
+            # ads the command after the class name e: User.a->User.all
+            text_copy = text.split('.')
+            if text_copy[0] in self.classes.keys():
+                for word in ['all', 'count', 'show', 'destroy', 'update']:
+                    if word.lower().startswith(text_copy[1].lower()):
+                        names.append('{}.{}'.format(text_copy[0], word))
+        else:
+            # add the classes as commands to autocomplete
+            for word in self.classes.keys():
+                if word.lower().startswith(text.lower()):
+                    names.append(word)
+        return names
 
     def do_EOF(self, line):
         """(ctrl+d) or ($ EOF): Exits the console """
