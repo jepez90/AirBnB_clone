@@ -234,6 +234,7 @@ def is_correct_class_name(self, args):
 def split_by_class_name(self, line):
     """splits the line when style Classname.command is used"""
     # gets the class name
+    import json
     line_split = line.split('.')
     class_name = line_split[0]
     if class_name not in self.classes.keys() or len(line_split) != 2:
@@ -256,7 +257,7 @@ def split_by_class_name(self, line):
     args = []
     try:
         args = json.loads(line_split)
-    except(JSONDecodeError):
+    except:
         args.append(line_split[1: -1])
     if len(args) == 0:
         args.append("")
