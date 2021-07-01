@@ -46,9 +46,9 @@ class TestBaseModel(unittest.TestCase):
 
     def test_save(self):
         """ Check save method """
+        update = self.base_model.updated_at
         self.base_model.save()
-        self.assertNotEqual(self.base_model.created_at,
-                            self.base_model.updated_at)
+        self.assertNotEqual(update, self.base_model.updated_at)
         self.assertTrue(os.path.exists('file.json'))
 
     def test_to_dict(self):

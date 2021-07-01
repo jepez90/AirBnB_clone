@@ -2,13 +2,6 @@
 """ This module defines the class HBNBCommand as a console """
 import cmd
 from models import storage
-from models.base_model import BaseModel
-from models.user import User
-from models.place import Place
-from models.state import State
-from models.city import City
-from models.amenity import Amenity
-from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
@@ -16,15 +9,7 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = "(hbnb) "
-    classes = {
-        "BaseModel": BaseModel,
-        "User": User,
-        "Place": Place,
-        "State": State,
-        "City": City,
-        "Amenity": Amenity,
-        "Review": Review
-    }
+    classes = {}
 
     def do_create(self, line):
         """($ create <classname>): Creates a new instance of BaseModel,
@@ -154,6 +139,27 @@ class HBNBCommand(cmd.Cmd):
 
         else:
             print("unhandle command")
+
+    def preloop(self):
+        """loads the classes before eenter to the loop"""
+        r = super().preloop()
+        from models.base_model import BaseModel
+        from models.user import User
+        from models.place import Place
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.review import Review
+        self.classes = {
+            "BaseModel": BaseModel,
+            "User": User,
+            "Place": Place,
+            "State": State,
+            "City": City,
+            "Amenity": Amenity,
+            "Review": Review
+        }
+        return r
 
     def completenames(self, text, *ignored):
         """ get the list of words to autocomplete """
