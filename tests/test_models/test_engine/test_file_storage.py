@@ -17,9 +17,11 @@ class TestFileStorage(unittest.TestCase):
     """
 
     def setUp(self):
+        """function to config each test"""
         self.file_path = getattr(FileStorage, "_FileStorage__file_path")
 
     def tearDown(self):
+        """function to end each test"""
         setattr(FileStorage, "_FileStorage__objects", {})
 
     def test_function_all(self):
