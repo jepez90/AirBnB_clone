@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 """ This module defines the class HBNBCommand as a console """
 import cmd
-import json
-from json.decoder import JSONDecodeError
 from models import storage
 from models.base_model import BaseModel
 from models.user import User
@@ -155,15 +153,6 @@ class HBNBCommand(cmd.Cmd):
 
         else:
             print("unhandle command")
-
-    def help_classname(self):
-        """ Show help string for <class name>.<command> options"""
-        print("<ClassName>.<action>(args):\n\
-        can invoke the nexts classnames:\n\
-        \t'BaseModel', 'User', 'Place', 'State', 'City', 'Amenity', 'Review'\n\
-        with the follows actions:\n\
-        \t'all', 'count', 'show', 'destroy', 'update':\n\
-        ex: User.update(38f22813-2753-4d42, first_name, John)\n")
 
     def completenames(self, text, *ignored):
         """ get the list of words to autocomplete """
