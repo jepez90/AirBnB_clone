@@ -4,7 +4,7 @@
     <img src="https://www.holbertonschool.com/holberton-logo.png"/>
 </p>
 
-`AirBnb_Clone` project from Holberton School, it's a project to implement the console which will be the command interpreter. The project has been done in python language. The present project is the first part of the AirBnB clone. The command interpreter will be manipulate data without a visual interface, like in a Shell.
+`AirBnb_Clone` project from Holberton School, it's a project to implement the console which will be the command interpreter. The project has been done in python language. The present project is the first part of the AirBnB clone.
 
 # Description
 
