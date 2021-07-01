@@ -141,6 +141,7 @@ class HBNBCommand(cmd.Cmd):
         elif command == 'update':
             if len(args) == 2 and type(args[1]) == dict:
                 # update from dictionary
+
                 update_from_dict(self, class_name, args)
             elif len(args) == 3:
                 # update only one attribute
@@ -173,7 +174,14 @@ class HBNBCommand(cmd.Cmd):
                     names.append(word)
         return names
 
-    def do_EOF(self, line):
+    def completedefault(self, text, line, begidx, endidx):
+        names = []
+        for word in self.classes.keys():
+            if word.lower().startswith(text.lower()):
+                names.append(word)
+        return names
+
+    def do_EOFhelp(self, line):
         """(ctrl+d) or ($ EOF): Exits the console """
         return True
 
@@ -202,13 +210,7 @@ def update_from_dict(self, class_name, args):
         ):
             instance = storage.all().get(instance_id)
 
-            try:
-                prev_attr = getattr(instance, attr_name)
-                type_attr = type(prev_attr)
-            except(AttributeError):
-                type_attr = str
-
-            setattr(instance, attr_name, type_attr(attr_value))
+            setattr(instance, attr_name, attr_value)
             instance.save()
 
 
@@ -235,7 +237,7 @@ def split_by_class_name(self, line):
     """splits the line when style Classname.command is used"""
     # gets the class name
     import json
-    line_split = line.split('.')
+    line_split = line.split('.', 1)
     class_name = line_split[0]
     if class_name not in self.classes.keys() or len(line_split) != 2:
         return None, None, None
@@ -252,7 +254,7 @@ def split_by_class_name(self, line):
         return class_name, None, None
 
     # gets the args of teh function
-
+    line_split = line_split.translate({39: 34})
     line_split = '[' + line_split[index_to_split + 1: -1] + ']'
     args = []
     try:
@@ -261,12 +263,6 @@ def split_by_class_name(self, line):
         args.append(line_split[1: -1])
     if len(args) == 0:
         args.append("")
-
-    """line_split = line_split.split(',')
-        args = []
-        for arg in line_split:
-            arg = arg.strip()
-            args.append(arg)"""
 
     return class_name, command, args
 
